@@ -1,0 +1,76 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.main-container {
+  text-align: center;
+  border: 10px solid red;
+  margin: 100px 50px;
+  height: auto;
+  .todoInput {
+    width: 20%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: none;
+    border-bottom: 2px solid rgb(170, 170, 170);
+  }
+  .todos li {
+    display: flex;
+    list-style: none;
+    text-align: center;
+    margin-right: auto;
+  }
+  .todos .todoCard {
+    display: inline-block;
+    padding: 10px 10px;
+    border: 3px solid red;
+  }
+  .todos .todoCard input[type='checkbox'] {
+    transform: scale(2);
+    margin: 10px 10px;
+  }
+  .todos .todoCard .todoName {
+    font-size: 20px;
+  }
+
+  .todos .todoCard .completed {
+    text-decoration: line-through;
+    opacity: 0.5;
+  }
+}
