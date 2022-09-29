@@ -64,7 +64,7 @@ jobs:
         run: 'cd todolist-sample'
 
       - name: 'copy resource'
-        run: 'gsutil rsync -r gs://todolist-sample ./todolist-sample'
+        run: 'gsutil rsync -r gs://todolist-sample .'
 
       - name: 'check inside directory'
         run: 'ls'
