@@ -1,0 +1,41 @@
+on:
+  push:
+    branches:
+      - 'main'
+      - 'deploySetting'
+  workflow_dispatch:
+
+jobs:
+  job_id:
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+       - uses: actions/checkout@v2
+       
+       - name: set up Node
+         uses: actions/setup-node@v3
+
+       - run: npm ci
+       - run: npm run build --if-present
+
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v0'
+        with:
+          service_account: ${{secrets.CLOUD_STORAGE_SERVICE_ACCOUNT}}
+
+      - id: 'upload-folder'
+        uses: 'google-github-actions/upload-cloud-storage@v0'
+        with:
+          path: 'build'
+          destination: 'todolist-sample'
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v0'
+
+      - name: 'Use gcloud CLI'
+        run: 'gcloud info'
+
+      - name: 'check directory'
+        run: 'ls'
