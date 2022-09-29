@@ -1,21 +1,90 @@
-import './App.css';
+import './App.scss';
 import TodoList from './components/todo/TodoList';
-import { useState, useRef } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import { useState, useRef, useEffect } from 'react';
 
 function App() {
   const [todos, setTodos] = useState([
-    { id: '100', name: 'wao', completed: false },
+    { id: '', name: '', completed: false, createdAt: '', updatedAt: '' },
   ]);
-  const todoNameRef = useRef();
+  const addTodoRef = useRef();
+  const searchTodoRef = useRef();
+
+  const handleKeypressEnterAdd = (e) => {
+    //it triggers by pressing the enter key
+    if (e.keyCode === 13) {
+      handleAddTodo();
+    }
+  };
+  const handleKeypressEnterSearch = (e) => {
+    //it triggers by pressing the enter key
+    if (e.keyCode === 13) {
+      handleSearchTodo();
+    }
+  };
+
+  const handleSearchTodo = () => {
+    const targetTodo = searchTodoRef.current.value;
+
+    if (targetTodo === '') return;
+
+    fetch(`http://localhost:3000/todos/search/${targetTodo}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then((data) => {
+      const loadedTodos = [];
+      for (const key in data) {
+        const todo = {
+          id: key,
+          completed: false,
+          ...data[key],
+        };
+        loadedTodos.push(todo);
+      }
+
+      setTodos(loadedTodos);
+
+      loadTodo();
+    });
+  };
 
   const handleAddTodo = () => {
-    const name = todoNameRef.current.value;
+    const name = addTodoRef.current.value;
+    const todo = {
+      name: name,
+    };
     if (name === '') return;
-    setTodos((prevTodos) => {
-      return [...prevTodos, { id: uuidv4(), name: name, completed: false }];
+
+    fetch('http://localhost:3000/todos', {
+      method: 'POST',
+      body: JSON.stringify(todo),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then(() => {
+      loadTodo();
+      addTodoRef.current.value = null;
     });
-    todoNameRef.current.value = null;
+  };
+
+  const updateTodo = (id, name) => {
+    if (name === '') return;
+    const todo = {
+      id: id,
+      name: name,
+    };
+    console.log('id is' + id);
+    console.log('name is' + name);
+    fetch(`http://localhost:3000/todos/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(todo),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then(() => {
+      loadTodo();
+    });
   };
 
   const toggleTodo = (id) => {
@@ -28,18 +97,96 @@ function App() {
   const deleteAllTodo = () => {
     setTodos([]); // todo add window alert later
   };
+
   const deleteTodo = (id) => {
-    const newTodos = [...todos];
-    setTodos(newTodos.filter((todo) => todo.id !== id));
+    fetch(`http://localhost:3000/todos/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then(() => {
+      loadTodo();
+    });
+  };
+
+  const loadTodo = () => {
+    fetch('http://localhost:3000/todos')
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        const loadedTodos = [];
+
+        for (const key in data) {
+          const todo = {
+            id: key,
+            completed: false,
+            ...data[key],
+          };
+          loadedTodos.push(todo);
+        }
+
+        setTodos(loadedTodos);
+      });
   };
 
   // todo implement edit function after connecting to server
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    setIsLoading(true);
+    fetch('http://localhost:3000/todos')
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        const loadedTodos = [];
+
+        for (const key in data) {
+          const todo = {
+            id: key,
+            completed: false,
+            ...data[key],
+          };
+          loadedTodos.push(todo);
+        }
+        setIsLoading(false);
+        setTodos(loadedTodos);
+      });
+  }, []);
+  if (isLoading) {
+    return (
+      <section>
+        <p>loading...</p>
+      </section>
+    );
+  }
 
   return (
-    <div>
-      <TodoList todos={todos} toggleTodo={toggleTodo} deleteTodo={deleteTodo} />
-      <input type='text' ref={todoNameRef} />
-      <button onClick={handleAddTodo}>add todo</button>
+    <div className='main-container'>
+      <input
+        className='todoInput'
+        type='text'
+        size='40'
+        onKeyDown={handleKeypressEnterAdd}
+        ref={addTodoRef}
+        placeholder='add todo'
+      />
+      <input
+        className='searchtodo'
+        type='text'
+        size='40'
+        onKeyDown={handleKeypressEnterSearch}
+        ref={searchTodoRef}
+        placeholder='search todo'
+      />
+      <div className='todos'>
+        <TodoList
+          todos={todos}
+          toggleTodo={toggleTodo}
+          deleteTodo={deleteTodo}
+          updateTodo={updateTodo}
+        />
+      </div>
       <button onClick={deleteAllTodo}>delete All todo</button>
     </div>
   );

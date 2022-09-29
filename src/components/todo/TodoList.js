@@ -1,14 +1,21 @@
 import React from 'react';
 import Todo from './Todo';
-const TodoList = ({ todos, toggleTodo, deleteTodo }) => {
-  return todos.map((todo) => (
-    <Todo
-      todo={todo}
-      key={todo.id}
-      toggleTodo={toggleTodo}
-      deleteTodo={deleteTodo}
-    />
-  )); //change key to unique
+const TodoList = ({ todos, toggleTodo, deleteTodo, updateTodo }) => {
+  return (
+    <ul>
+      {todos.map((todo) => (
+        // need to add key to the outermost tag .
+        <li key={todo.id}>
+          <Todo
+            todo={todo}
+            toggleTodo={toggleTodo}
+            deleteTodo={deleteTodo}
+            updateTodo={updateTodo}
+          />
+        </li>
+      ))}
+    </ul>
+  );
 };
 
 export default TodoList;
