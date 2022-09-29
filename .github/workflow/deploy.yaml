@@ -1,18 +1,23 @@
-on:
+name: react deploy to Google Cloud Storage
+
+on: 
   push:
-    branches:
-      - 'main'
-      - 'deploySetting'
+    branches: [ "main","deploySetting" ]
+  pull_request:
+    branches: [ "main","deploySetting" ]
+    
   workflow_dispatch:
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
   job_id:
     permissions:
       contents: 'read'
       id-token: 'write'
 
     steps:
-       - uses: actions/checkout@v2
+       - uses: actions/checkout@v3
        
        - name: set up Node
          uses: actions/setup-node@v3
