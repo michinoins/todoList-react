@@ -1,46 +1,36 @@
-name: react deploy to Google Cloud Storage
+# This is a basic workflow to help you get started with Actions
 
-on: 
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main","deploySetting" ]
+    branches: ['main', 'deploySetting']
   pull_request:
-    branches: [ "main","deploySetting" ]
-    
+    branches: ['main', 'deploySetting']
+
+  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  # This workflow contains a single job called "build"
   build:
+    # The type of runner that the job will run on
     runs-on: ubuntu-latest
-  job_id:
-    permissions:
-      contents: 'read'
-      id-token: 'write'
 
+    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-       - uses: actions/checkout@v3
-       
-       - name: set up Node
-         uses: actions/setup-node@v3
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
 
-       - run: npm ci
-       - run: npm run build --if-present
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
+        run: echo Hello, world!
 
-      - id: 'auth'
-        uses: 'google-github-actions/auth@v0'
-        with:
-          service_account: ${{secrets.CLOUD_STORAGE_SERVICE_ACCOUNT}}
-
-      - id: 'upload-folder'
-        uses: 'google-github-actions/upload-cloud-storage@v0'
-        with:
-          path: 'build'
-          destination: 'todolist-sample'
-
-      - name: 'Set up Cloud SDK'
-        uses: 'google-github-actions/setup-gcloud@v0'
-
-      - name: 'Use gcloud CLI'
-        run: 'gcloud info'
-
-      - name: 'check directory'
-        run: 'ls'
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+          echo Add other actions to build,
+          echo test, and deploy your project.
