@@ -28,6 +28,8 @@ jobs:
 
       - name: set up npm
         run: npm ci
+
+      - name: npm build
         run: npm run build --if-present
 
       - id: 'auth'
@@ -50,20 +52,22 @@ jobs:
         run: 'gcloud info'
 
       - name: 'check directory'
-        run: 'ls' 
+        run: 'ls'
 
       - name: 'check current Directory'
         run: 'pwd'
 
       - name: 'mkdir'
         run: 'mkdir todolist-sample'
-      
+
       - name: 'copy resource'
         run: 'gsutil rsync -r gs://todolist-sample ./todolist-sample'
-        run:  'cd todolist-sample'
+
+      - name: 'check directory'
+        run: 'cd todolist-sample'
 
       - name: 'build app.yaml'
         run: 'ls app.yaml build'
 
       - name: 'deploy'
-        run:  'gcloud app deploy'
+        run: 'gcloud app deploy'
