@@ -66,10 +66,10 @@ jobs:
       - name: 'copy resource'
         run: 'gsutil rsync -r gs://todolist-sample .'
 
-      - name: 'check inside directory'
-        run: 'ls'
+      - name: 'pwd'
+        run: 'pwd'
 
-      - name: 'build app.yaml'
+      - name: 'ls app.yaml'
         run: 'ls app.yaml build'
 
       - name: 'deploy'
