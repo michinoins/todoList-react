@@ -25,28 +25,27 @@ function App() {
   const handleSearchTodo = () => {
     const targetTodo = searchTodoRef.current.value;
 
-    if (targetTodo === '') return;
-
-    fetch(`http://localhost:3000/todos/search/${targetTodo}`, {
+    fetch(`http://localhost:3000/todos/search?targetTodo=${targetTodo}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
-    }).then((data) => {
-      const loadedTodos = [];
-      for (const key in data) {
-        const todo = {
-          id: key,
-          completed: false,
-          ...data[key],
-        };
-        loadedTodos.push(todo);
-      }
-
-      setTodos(loadedTodos);
-
-      loadTodo();
-    });
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        const loadedTodos = [];
+        for (const key in data) {
+          const todo = {
+            id: key,
+            completed: false,
+            ...data[key],
+          };
+          loadedTodos.push(todo);
+        }
+        setTodos(loadedTodos);
+      });
   };
 
   const handleAddTodo = () => {
@@ -95,7 +94,10 @@ function App() {
   };
 
   const deleteAllTodo = () => {
-    setTodos([]); // todo add window alert later
+    var isExecuted = window.confirm('Are you sure to delete all todos?');
+    if (isExecuted) {
+      setTodos([]); // todo add window alert later
+    }
   };
 
   const deleteTodo = (id) => {
@@ -187,7 +189,11 @@ function App() {
           updateTodo={updateTodo}
         />
       </div>
-      <button onClick={deleteAllTodo}>delete All todo</button>
+      <button onClick={deleteAllTodo} className='deleteAllButton'>
+        <span>Delete All Todo</span>
+        <i className='fa  fa-trash' />
+      </button>
+      )
     </div>
   );
 }
