@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react';
+import 'font-awesome/css/font-awesome.min.css';
 
 const Todo = ({ todo, toggleTodo, deleteTodo, updateTodo }) => {
   const [editTodo, setEditTodo] = useState(false);
-  const editRef = useRef();
   const editTodoRef = useRef();
 
   const handleTodoClick = () => {
@@ -12,45 +12,35 @@ const Todo = ({ todo, toggleTodo, deleteTodo, updateTodo }) => {
     deleteTodo(todo.id);
   };
   const handleEditStart = () => {
-    handleEditUnComplete();
+    document.addEventListener('click', handleClickOutside);
     setEditTodo(true);
   };
   const handleEditComplete = () => {
+    console.log('handleEditComplete');
     const updatedName = editTodoRef.current.value;
+    document.removeEventListener('click', handleClickOutside);
     updateTodo(todo.id, updatedName);
+
     setEditTodo(false);
   };
 
-  const handleKeypressEnter = (e) => {
-    //it triggers by pressing the enter key
-    if (e.keyCode === 13) {
-      handleEditComplete();
+  //クリックした時に実行する関数
+  const handleClickOutside = (e) => {
+    console.log('handleClickOutSide');
+    const className = e.target.className;
+
+    if (className === 'todoName' || className === 'editInput') {
+      console.log('inside of todo');
+      setEditTodo(true);
+    } else {
+      console.log('outside of todo');
+      setEditTodo(false);
+      document.removeEventListener('click', handleClickOutside);
     }
   };
 
-  // should be fixed to prevent editing multiple todos at the same time
-  const handleEditUnComplete = () => {
-    //クリックした時に実行する関数
-    const hundleClickOutside = (e) => {
-      const className = e.target.className;
-
-      if (
-        (className === 'todoName' || className === 'editInput') &&
-        editTodo === false
-      ) {
-        setEditTodo(true);
-      } else {
-        setEditTodo(false);
-        //クリーンアップ関数
-        document.removeEventListener('click', hundleClickOutside);
-      }
-    };
-    //クリックイベントを設定
-    document.addEventListener('click', hundleClickOutside);
-  };
-
   return (
-    <div className='todoCard' ref={editRef}>
+    <div className='todoCard'>
       <input
         type='checkbox'
         checked={todo.completed}
@@ -65,13 +55,17 @@ const Todo = ({ todo, toggleTodo, deleteTodo, updateTodo }) => {
           <input
             type='text'
             defaultValue={todo.name}
-            onKeyDown={handleKeypressEnter}
             ref={editTodoRef}
             className='editInput'
           />
         )}
       </span>
-      <button onClick={handleTodoDelete}>delete</button>
+      <button onClick={handleEditComplete} className='submitButton'>
+        submit edit
+      </button>
+      <button onClick={handleTodoDelete} className='deleteButton'>
+        <i className='fa  fa-trash' />
+      </button>
     </div>
   );
 };
