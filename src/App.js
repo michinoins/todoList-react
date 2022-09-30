@@ -97,6 +97,12 @@ function App() {
     var isExecuted = window.confirm('Are you sure to delete all todos?');
     if (isExecuted) {
       setTodos([]); // todo add window alert later
+      fetch(`http://localhost:3000/todos/`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then(() => {});
     }
   };
 
@@ -193,7 +199,6 @@ function App() {
         <span>Delete All Todo</span>
         <i className='fa  fa-trash' />
       </button>
-      )
     </div>
   );
 }
