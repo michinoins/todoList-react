@@ -60,7 +60,6 @@ const Home = () => {
       todo: addingTodo,
     };
     if (addingTodo === '') return;
-
     await axios({
       url: `${baseApiUrl}/todos`,
       method: 'POST',
@@ -78,7 +77,12 @@ const Home = () => {
 
   const updateTodo = async (id, name) => {
     if (name === '') return;
-    const todo = {
+    const newTodos = [...todos];
+    const updated = newTodos.find((todo) => todo.id === id);
+    updated.name = name;
+    setTodos(newTodos);
+
+    const updatedTodo = {
       id: id,
       name: name,
     };
@@ -90,17 +94,29 @@ const Home = () => {
         'Content-Type': 'application/json',
       },
       withCredentials: true,
-      data: JSON.stringify(todo),
-    }).then(() => {
-      loadTodo();
-    });
+      data: JSON.stringify(updatedTodo),
+    }).then(() => {});
   };
 
-  const toggleTodo = (id) => {
+  const toggleTodo = async (id) => {
     const newTodos = [...todos];
     const todo = newTodos.find((todo) => todo.id === id);
     todo.completed = !todo.completed;
     setTodos(newTodos);
+
+    const updateCompleted = {
+      completed: todo.completed,
+    };
+    await axios({
+      url: `${baseApiUrl}/todos/${id}/toggle`,
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      withCredentials: true,
+      data: JSON.stringify(updateCompleted),
+    }).then(() => {});
   };
 
   const deleteAllTodo = async () => {
@@ -120,6 +136,11 @@ const Home = () => {
   };
 
   const deleteTodo = async (id) => {
+    console.log('deleteTodo Id' + id);
+    const targetTodo = [...todos];
+    const newTodos = targetTodo.filter((todo) => todo.id !== id);
+    setTodos(newTodos);
+
     await axios({
       url: `${baseApiUrl}/todos/${id}`,
       method: 'DELETE',
@@ -128,9 +149,7 @@ const Home = () => {
         'Content-Type': 'application/json',
       },
       withCredentials: true,
-    }).then(() => {
-      loadTodo();
-    });
+    }).then(() => {});
   };
 
   const loadTodo = async () => {
