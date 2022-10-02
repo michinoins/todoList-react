@@ -16,7 +16,6 @@ const Todo = ({ todo, toggleTodo, deleteTodo, updateTodo }) => {
     setEditTodo(true);
   };
   const handleEditComplete = () => {
-    console.log('handleEditComplete');
     const updatedName = editTodoRef.current.value;
     document.removeEventListener('click', handleClickOutside);
     updateTodo(todo.id, updatedName);
@@ -24,16 +23,12 @@ const Todo = ({ todo, toggleTodo, deleteTodo, updateTodo }) => {
     setEditTodo(false);
   };
 
-  //クリックした時に実行する関数
   const handleClickOutside = (e) => {
-    console.log('handleClickOutSide');
     const className = e.target.className;
 
     if (className === 'todoName' || className === 'editInput') {
-      console.log('inside of todo');
       setEditTodo(true);
     } else {
-      console.log('outside of todo');
       setEditTodo(false);
       document.removeEventListener('click', handleClickOutside);
     }
