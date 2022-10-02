@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import axios from 'axios';
+import { baseApiUrl } from '../../utils/constants/apiUrl';
 
 import {
   MDBContainer,
@@ -21,10 +22,9 @@ const LoginForm = () => {
   });
   const [formNullError, setFormNullError] = useState('');
   const [formLengthError, setFormLengthError] = useState('');
+  const [invalidLoginInfo, setInvalidLoginInfo] = useState(false);
 
   const handleChange = (e) => {
-    console.log('e.target.name ' + e.target.name);
-    console.log('e.target.value ' + e.target.value);
     setFormData({
       ...formData,
       [e.target.name]: e.target.value.trim(),
@@ -32,6 +32,8 @@ const LoginForm = () => {
   };
 
   const handleJustifyClick = (value) => {
+    resetFormState();
+
     if (value === justifyActive) {
       return;
     }
@@ -45,7 +47,7 @@ const LoginForm = () => {
       setFormNullError('Please enter your username and password');
       return true;
     }
-    if (password.length <= 8) {
+    if (password.length <= 7) {
       setFormLengthError('Please set a password of at least 8 characters');
       return true;
     }
@@ -55,6 +57,7 @@ const LoginForm = () => {
   const resetFormState = () => {
     setFormNullError('');
     setFormLengthError('');
+    setInvalidLoginInfo(false);
   };
 
   const handleRegisterUser = async () => {
@@ -70,7 +73,7 @@ const LoginForm = () => {
     };
 
     await axios({
-      url: 'http://localhost:3000/users',
+      url: `${baseApiUrl}/users`,
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -79,7 +82,6 @@ const LoginForm = () => {
       withCredentials: true,
       data: JSON.stringify(account),
     }).then((e) => {
-      console.log('created' + e);
       window.alert('user created');
       window.location = '/login';
     });
@@ -94,10 +96,9 @@ const LoginForm = () => {
       username: username,
       password: password,
     };
-    if (username === '' || password === '') return;
 
     await axios({
-      url: 'http://localhost:3000/users/login',
+      url: `${baseApiUrl}/users/login`,
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -105,8 +106,14 @@ const LoginForm = () => {
       },
       withCredentials: true,
       data: JSON.stringify(account),
-    }).then((e) => {
-      console.log('login Succeed' + e);
+      credentials: 'include',
+    }).then((res) => {
+      if (res.data.errorCode === 400) {
+        setInvalidLoginInfo(true);
+        console.log('login fail');
+        return;
+      }
+      console.log('login Succeed');
       window.location = '/';
     });
   };
@@ -154,6 +161,21 @@ const LoginForm = () => {
             name='password'
             onChange={handleChange}
           />
+          {formNullError !== '' ? (
+            <div className='formNullError'> {formNullError} </div>
+          ) : (
+            <div></div>
+          )}
+          {setFormLengthError !== '' ? (
+            <div className='formLengthError'> {formLengthError} </div>
+          ) : (
+            <div></div>
+          )}
+          {invalidLoginInfo === true ? (
+            <div className='invalidLoginInfo'>invalid login information</div>
+          ) : (
+            <div></div>
+          )}
 
           <MDBBtn className='mb-4 w-100' onClick={handleLogin}>
             Sign in
