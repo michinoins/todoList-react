@@ -189,7 +189,7 @@ const Home = () => {
   }
 
   return (
-    <div class='container'>
+    <div className='container'>
       <div className='todo-container'>
         <input
           className='todoInput'
@@ -223,7 +223,7 @@ const Home = () => {
 
       <MDBBtn className='mb-4 w-15 signoutButton' onClick={signOut}>
         <span>Sign Out</span>
-        <i class='fa-regular fa-person-from-portal'></i>
+        <i className='fa-regular fa-person-from-portal'></i>
       </MDBBtn>
     </div>
   );
