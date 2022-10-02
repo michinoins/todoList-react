@@ -22,10 +22,9 @@ const Todo = ({ todo, toggleTodo, deleteTodo, updateTodo }) => {
 
     setEditTodo(false);
   };
-
+  // when  clicked outside of todoCard, edit mode exits
   const handleClickOutside = (e) => {
     const className = e.target.className;
-
     if (className === 'todoName' || className === 'editInput') {
       setEditTodo(true);
     } else {

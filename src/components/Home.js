@@ -4,6 +4,7 @@ import axios from 'axios';
 import TodoList from './todo/TodoList';
 
 import { MDBBtn } from 'mdb-react-ui-kit';
+import { baseApiUrl } from '../utils/constants/apiUrl';
 
 const Home = () => {
   const [todos, setTodos] = useState([
@@ -29,7 +30,7 @@ const Home = () => {
     const targetTodo = searchTodoRef.current.value;
 
     await axios({
-      url: `http://localhost:3000/todos/search?targetTodo=${targetTodo}`,
+      url: `${baseApiUrl}/todos/search?targetTodo=${targetTodo}`,
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -61,7 +62,7 @@ const Home = () => {
     if (addingTodo === '') return;
 
     await axios({
-      url: 'http://localhost:3000/todos',
+      url: `${baseApiUrl}/todos`,
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -82,7 +83,7 @@ const Home = () => {
       name: name,
     };
     await axios({
-      url: `http://localhost:3000/todos/${id}`,
+      url: `${baseApiUrl}/todos/${id}`,
       method: 'PUT',
       headers: {
         Accept: 'application/json',
@@ -107,7 +108,7 @@ const Home = () => {
     if (isExecuted) {
       setTodos([]); // todo add window alert later
       await axios({
-        url: `http://localhost:3000/todos/`,
+        url: `${baseApiUrl}/todos/`,
         method: 'DELETE',
         headers: {
           Accept: 'application/json',
@@ -120,7 +121,7 @@ const Home = () => {
 
   const deleteTodo = async (id) => {
     await axios({
-      url: `http://localhost:3000/todos/${id}`,
+      url: `${baseApiUrl}/todos/${id}`,
       method: 'DELETE',
       headers: {
         Accept: 'application/json',
@@ -133,8 +134,10 @@ const Home = () => {
   };
 
   const loadTodo = async () => {
+    console.log('baseApiUrl is ' + baseApiUrl);
+
     await axios({
-      url: 'http://localhost:3000/todos',
+      url: `${baseApiUrl}/todos`,
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -158,7 +161,7 @@ const Home = () => {
 
   const signOut = async () => {
     await axios({
-      url: `http://localhost:3000/users/logout`,
+      url: `${baseApiUrl}/users/logout`,
       method: 'POST',
       headers: {
         Accept: 'application/json',
