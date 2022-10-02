@@ -106,6 +106,7 @@ const LoginForm = () => {
       },
       withCredentials: true,
       data: JSON.stringify(account),
+      credentials: 'include',
     }).then((res) => {
       if (res.data.errorCode === 400) {
         setInvalidLoginInfo(true);
