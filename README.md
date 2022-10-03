@@ -21,4 +21,3 @@ https://user-images.githubusercontent.com/35657794/193484972-20de463f-16aa-4d48-
 ## System Flow
 [todosequence.pdf](https://github.com/michinoins/todoList-react/files/9694758/todosequence.pdf)
 
-* Due to the free quota of the service, the logout process is omitted, but it is the same image as the login process.
