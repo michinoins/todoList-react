@@ -103,7 +103,7 @@ const Home = () => {
     const todo = newTodos.find((todo) => todo.id === id);
     todo.completed = !todo.completed;
     setTodos(newTodos);
-
+    console.log(' toggle fires');
     const updateCompleted = {
       completed: todo.completed,
     };
